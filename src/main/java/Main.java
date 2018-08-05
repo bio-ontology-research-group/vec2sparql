@@ -18,7 +18,10 @@ public class Main {
 
 	Map<String, double[]> embeddings = readEmbeddings();
 
-	FunctionRegistry.get().put("http://bio2vec.net/function#similarity", new SimFunctionFactory(embeddings)) ;
+	FunctionRegistry.get().put("http://bio2vec.net/function#similarity",
+				   new SimFunctionFactory(embeddings));
+	FunctionRegistry.get().put("http://bio2vec.net/function#getMostSimilar",
+				   new MostSimFunctionFactory(embeddings));
 
 	FusekiServer fs = FusekiServer.create()
 	    .add("/ds", ds, true)

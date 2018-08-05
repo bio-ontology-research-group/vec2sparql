@@ -24,6 +24,8 @@ dependencies {
     compile 'org.slf4j:slf4j-api:1.7.13'
     compile 'org.slf4j:slf4j-jdk14:1.7.13'
     compile 'org.apache.jena:jena-fuseki-embedded:3.8.0'
+    compile 'org.apache.httpcomponents:httpclient:4.5.6'
+    compile 'org.json:json:20180130'
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
