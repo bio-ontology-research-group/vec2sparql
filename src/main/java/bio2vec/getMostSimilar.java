@@ -3,7 +3,7 @@ package bio2vec;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.function.FunctionBase1;
+import org.apache.jena.sparql.function.FunctionBase2;
 import org.apache.jena.sparql.util.FmtUtils;
 import java.io.*;
 import java.util.*;
@@ -15,7 +15,7 @@ import org.apache.http.util.*;
 import org.apache.http.entity.*;
 import org.apache.http.impl.client.*;
 
-public class getMostSimilar extends FunctionBase1 {
+public class getMostSimilar extends FunctionBase2 {
 
     Map<String, double[]> embeddings;
     
@@ -24,12 +24,14 @@ public class getMostSimilar extends FunctionBase1 {
 	this.embeddings = embeddings;
     }
 
-    public NodeValue exec(NodeValue nv)
-    {
-        Node n = nv.asNode();
+    public NodeValue exec(NodeValue nv1, NodeValue nv2) {
+        Node n = nv1.asNode();
         if (!n.isURI())
             throw new ExprEvalException("Not a URI: " + FmtUtils.stringForNode(n));
-        String v = nv.asString();
+	if (!nv2.isInteger())
+            throw new ExprEvalException("Not an integer: " + nv2.toString());
+	String v = nv1.asString();
+	int size = nv2.getInteger().intValue();
 	if (!this.embeddings.containsKey(v)) {
 	    throw new ExprEvalException("No embedding for a " + v);
 	}
@@ -60,9 +62,9 @@ public class getMostSimilar extends FunctionBase1 {
 		      .put("_score", "desc"))
 		 .put(new JSONObject()
 		      .put("id", "desc")))
-	    .put("size", 1)
+	    .put("size", size)
 	    .toString();
-	
+	JSONArray result = new JSONArray();
 	CloseableHttpClient client = HttpClients.createDefault();
 	try {
 	    try { 
@@ -86,8 +88,11 @@ public class getMostSimilar extends FunctionBase1 {
 		    // Use caution: ensure correct character encoding and is not binary data
 		    JSONObject obj = new JSONObject(responseBody);
 		    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
-		    obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
-		    res = obj.get("id").toString();
+		    for (int i = 0; i < arr.length(); i++) {
+			obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
+			res = obj.get("id").toString();
+			result.put(res);
+		    }
 		    EntityUtils.consume(entity);
 		} finally {
 		    // Release the connection.
@@ -99,6 +104,6 @@ public class getMostSimilar extends FunctionBase1 {
 	} catch (IOException ex) {
 	    ex.printStackTrace();
 	}
-        return NodeValue.makeString(res);
+        return NodeValue.makeString(result.toString());
     }
 }
