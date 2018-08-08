@@ -8,6 +8,8 @@ import org.apache.jena.query.Dataset;
 import org.apache.jena.atlas.logging.LogCtl;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.function.FunctionRegistry;
+import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
+import org.apache.jena.query.ARQ;
 import bio2vec.*;
 
 public class Main {
@@ -22,6 +24,10 @@ public class Main {
 				   new SimFunctionFactory(embeddings));
 	FunctionRegistry.get().put("http://bio2vec.net/function#getMostSimilar",
 				   new MostSimFunctionFactory(embeddings));
+
+	final PropertyFunctionRegistry reg = PropertyFunctionRegistry.chooseRegistry(ARQ.getContext());
+	reg.put("http://bio2vec.net/function#mostSimilar", new MostSimPropertyFunctionFactory(embeddings));
+	PropertyFunctionRegistry.set(ARQ.getContext(), reg);
 
 	FusekiServer fs = FusekiServer.create()
 	    .add("/ds", ds, true)
