@@ -16,7 +16,7 @@ public class Main {
 
     public void run(String[] args) {
 	LogCtl.setJavaLogging();
-	Dataset ds = RDFDataMgr.loadDataset("data/bio-knowledge-graph.n3");
+	Dataset ds = RDFDataMgr.loadDataset("data/graph.nt");
 
 	Map<String, double[]> embeddings = readEmbeddings();
 
@@ -38,7 +38,7 @@ public class Main {
 
     private Map<String, double[]> readEmbeddings() {
 	Map<String, double[]> embeddings = new HashMap<String, double[]>();
-	String fileName = "data/bio-knowledge-graph.embeddings";
+	String fileName = "data/graph_embeddings.txt";
 	try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName))) {
 	    String line;
 	    while((line = br.readLine()) != null) {
