@@ -2,3 +2,4 @@ build/
 data/
 *~
 .gradle/
+frontend/npm_modules

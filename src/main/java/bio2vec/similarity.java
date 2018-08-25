@@ -43,6 +43,7 @@ public class similarity extends FunctionBase2 {
 	}
 	double[] vec1 = this.embeddings.get(v1);
 	double[] vec2 = this.embeddings.get(v2);
-	return NodeValue.makeNodeDouble(cosineSimilarity(vec1, vec2));
+	double sim = cosineSimilarity(vec1, vec2);
+	return NodeValue.makeNodeDouble(sim);
     }
 }
