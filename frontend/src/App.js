@@ -13,11 +13,16 @@ class App extends Component {
 	};
 
 	this.handleExampleClick = this.handleExampleClick.bind(this);
+	this.handleQueryChange = this.handleQueryChange.bind(this);
     }
     
     handleExampleClick(event) {
 	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?s ?o {?s ?p ?o FILTER (b2v:similarity(?s, ?o) = 1)} \nLIMIT 5";
 	this.setState({ query: query });
+    }
+
+    handleQueryChange(event) {
+	this.setState({query: event.target.value});
     }
     
     render() {
@@ -33,7 +38,7 @@ class App extends Component {
 		<form className="form form-sparql" action="/ds/query" method="get">
 		<div className="form-group">
 		<label for="query">Enter SPARQL Query</label>
-		<textarea className="form-control" name="query" id="query" rows="5" value={this.state.query}/>
+		<textarea className="form-control" name="query" id="query" rows="5" value={this.state.query} onChange={this.handleQueryChange}/>
 		</div>
 		<button className="btn btn-primary" type="submit">Submit</button>
 		</form>
