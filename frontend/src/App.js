@@ -36,9 +36,24 @@ class App extends Component {
 		<p><a href="/#" onClick={this.handleExampleClick} >Example 1</a></p>
 		<div className="text-center">
 		<form className="form form-sparql" action="/ds/query" method="get">
-		<div className="form-group">
-		<label for="query">Enter SPARQL Query</label>
+		<div className="form-group row">
+		<label class="col-sm-3" for="query">SPARQL Query</label>
+		<div class="col-sm-9">
 		<textarea className="form-control" name="query" id="query" rows="5" value={this.state.query} onChange={this.handleQueryChange}/>
+		</div>
+		</div>
+		<div className="form-group row">
+		<label for="format" class="col-sm-3">Output format</label>
+		<div class="col-sm-9">
+		<select id="format" name="format" class="form-control">
+		<option selected value="">-----</option>
+		<option>json</option>
+		<option>text</option>
+		<option>xml</option>
+		<option>csv</option>
+		
+		</select>
+		</div>
 		</div>
 		<button className="btn btn-primary" type="submit">Submit</button>
 		</form>
