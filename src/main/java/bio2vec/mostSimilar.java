@@ -71,9 +71,6 @@ public class mostSimilar extends PFuncSimpleAndList {
 	String query = new JSONObject()
 	    .put("query", new JSONObject()
 		 .put("function_score", new JSONObject()
-		      .put("query", new JSONObject()
-			   .put("query_string", new JSONObject()
-				.put("query", "dataset_name: " + datasetName)))
 		      .put("script_score", new JSONObject()
 			   .put("script", new JSONObject()
 				.put("inline", "payload_vector_score")
@@ -85,16 +82,14 @@ public class mostSimilar extends PFuncSimpleAndList {
 		      .put("boost_mode", "replace")))
 	    .put("sort", new JSONArray()
 		 .put(new JSONObject()
-		      .put("_score", "desc"))
-		 .put(new JSONObject()
-		      .put("id", "desc")))
+		      .put("_score", "desc")))
 	    .put("size", size)
 	    .toString();
 	ArrayList<Node> result = new ArrayList<Node>();
 	CloseableHttpClient client = HttpClients.createDefault();
 	try {
 	    try { 
-		HttpPost post = new HttpPost("http://10.254.145.46:9200/bio2vec/_search");
+		HttpPost post = new HttpPost("http://10.254.145.46:9200/tmp/_search");
 		StringEntity requestEntity = new StringEntity(query,
 							      ContentType.APPLICATION_JSON);
 		post.setEntity(requestEntity);
@@ -112,11 +107,12 @@ public class mostSimilar extends PFuncSimpleAndList {
 		    String responseBody = EntityUtils.toString(entity, "UTF-8");
 		    // Deal with the response.
 		    // Use caution: ensure correct character encoding and is not binary data
+		    System.out.println(responseBody);
 		    JSONObject obj = new JSONObject(responseBody);
 		    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 		    for (int i = 0; i < arr.length(); i++) {
 			obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
-			res = obj.get("id").toString();
+			res = obj.get("entity_id").toString();
 			result.add(NodeFactory.createURI(res));
 		    }
 		    EntityUtils.consume(entity);
