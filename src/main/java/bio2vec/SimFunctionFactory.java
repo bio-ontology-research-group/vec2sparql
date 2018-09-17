@@ -6,13 +6,10 @@ import java.util.Map;
 
 public class SimFunctionFactory implements FunctionFactory {
 
-    private Map<String, double[]> embeddings;
-    
-    public SimFunctionFactory(Map<String, double[]> embeddings) {
-	this.embeddings = embeddings;
+    public SimFunctionFactory() {
     }
 
     public Function create(String uri) {
-	return new similarity(this.embeddings);
+	return new similarity();
     }
 }

@@ -32,11 +32,8 @@ import org.apache.http.impl.client.*;
 
 public class mostSimilar extends PFuncSimpleAndList {
 
-    Map<String, double[]> embeddings;
-    
-    public mostSimilar(Map<String, double[]> embeddings) {
+    public mostSimilar() {
 	super();
-	this.embeddings = embeddings;
     }
 
     @Override
@@ -57,24 +54,34 @@ public class mostSimilar extends PFuncSimpleAndList {
 	String v = object.getArg(0).toString();
 	int size = Integer.parseInt(object.getArg(1).getLiteralLexicalForm().toString());
 
-	if (!this.embeddings.containsKey(v)) {
+	ArrayList<Node> result = new ArrayList<Node>();
+	
+	// double[] e = embeddings.get(v);
+	String query = new JSONObject()
+	    .put("query", new JSONObject()
+		 .put("term", new JSONObject()
+		      .put("id", v)))
+	    .toString();
+
+	JSONObject obj = Utils.queryIndex(query);
+	if (obj == null) {
 	    return IterLib.noResults(execCxt);
 	}
+	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
+	obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
+	String res = obj.get("@model_factor").toString();
 	
-	String res = v;
-	double[] e = embeddings.get(v);
 	JSONArray eArray = new JSONArray();
-	for (double x: e) {
-	    eArray.put(x);
+	for (String x: res.split(" ")) {
+	    eArray.put(Double.parseDouble(x.split("\\|")[1]));
 	}
-	String datasetName = "bio-knowledge-graph";
-	String query = new JSONObject()
+	query = new JSONObject()
 	    .put("query", new JSONObject()
 		 .put("function_score", new JSONObject()
 		      .put("script_score", new JSONObject()
 			   .put("script", new JSONObject()
 				.put("inline", "payload_vector_score")
-				.put("lang", "native")
+					.put("lang", "native")
 				.put("params", new JSONObject()
 				     .put("field", "@model_factor")
 				     .put("vector", eArray)
@@ -85,49 +92,14 @@ public class mostSimilar extends PFuncSimpleAndList {
 		      .put("_score", "desc")))
 	    .put("size", size)
 	    .toString();
-	ArrayList<Node> result = new ArrayList<Node>();
-	CloseableHttpClient client = HttpClients.createDefault();
-	try {
-	    try { 
-		HttpPost post = new HttpPost("http://10.254.145.46:9200/tmp/_search");
-		StringEntity requestEntity = new StringEntity(query,
-							      ContentType.APPLICATION_JSON);
-		post.setEntity(requestEntity);
-		CloseableHttpResponse response = client.execute(post);
-		try {
-		    // Execute the method.
-		    int statusCode = response.getStatusLine().getStatusCode();
-		    
-		    if (statusCode < 200 || statusCode >= 300) {
-			System.err.println("Method failed: " + response.getStatusLine());
-		    }
-	    
-		    // Read the response body.
-		    HttpEntity entity = response.getEntity();
-		    String responseBody = EntityUtils.toString(entity, "UTF-8");
-		    // Deal with the response.
-		    // Use caution: ensure correct character encoding and is not binary data
-		    System.out.println(responseBody);
-		    JSONObject obj = new JSONObject(responseBody);
-		    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
-		    for (int i = 0; i < arr.length(); i++) {
-			obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
-			res = obj.get("entity_id").toString();
-			result.add(NodeFactory.createURI(res));
-		    }
-		    EntityUtils.consume(entity);
-		} finally {
-		    // Release the connection.
-		    response.close();
-		}
-	    } finally {
-		client.close();
-	    }
-	} catch (IOException ex) {
-	    ex.printStackTrace();
+	
+	obj = Utils.queryIndex(query);
+	arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
+	for (int i = 0; i < arr.length(); i++) {
+	    obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
+	    res = obj.get("id").toString();
+	    result.add(NodeFactory.createURI(res));
 	}
-	
-	
         if (Var.isVar(subject)) {
             
             // Case: Subject is variable. Return all results.
