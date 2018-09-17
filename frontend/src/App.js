@@ -18,7 +18,7 @@ class App extends Component {
     }
     
     handleExample1Click(event) {
-	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?s ?o {?s ?p ?o FILTER (b2v:similarity(?s, ?o) = 1)} \nLIMIT 5";
+	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?s ?o {?s ?p ?o FILTER (b2v:similarity(?s, ?o) = 0.5)} \nLIMIT 5";
 	this.setState({ query: query });
     }
 
