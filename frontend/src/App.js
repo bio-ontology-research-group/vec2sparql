@@ -12,12 +12,18 @@ class App extends Component {
 	    query: '',
 	};
 
-	this.handleExampleClick = this.handleExampleClick.bind(this);
+	this.handleExample1Click = this.handleExample1Click.bind(this);
+	this.handleExample2Click = this.handleExample2Click.bind(this);
 	this.handleQueryChange = this.handleQueryChange.bind(this);
     }
     
-    handleExampleClick(event) {
+    handleExample1Click(event) {
 	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?s ?o {?s ?p ?o FILTER (b2v:similarity(?s, ?o) = 1)} \nLIMIT 5";
+	this.setState({ query: query });
+    }
+
+    handleExample2Click(event) {
+	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?o ?sim {?s ?p ?o .  ?sim b2v:mostSimilar(?o 5)} \nLIMIT 20";
 	this.setState({ query: query });
     }
 
@@ -33,7 +39,9 @@ class App extends Component {
 		<h1 className="App-title">Vec2SPARQL</h1>
 		</header>
 		<main className="container">
-		<p><a href="/#" onClick={this.handleExampleClick} >Example 1</a></p>
+		<p><a href="/#" onClick={this.handleExample1Click} >Example 1</a>
+		&nbsp;&nbsp;<a href="/#" onClick={this.handleExample2Click} >Example 2</a>
+	    </p>
 		<div className="text-center">
 		<form className="form form-sparql" action="/ds/query" method="get">
 		<div className="form-group row">
