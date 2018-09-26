@@ -18,12 +18,24 @@ class App extends Component {
     }
     
     handleExample1Click(event) {
-	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?s ?o {?s ?p ?o FILTER (b2v:similarity(?s, ?o) > 0.5)} \nLIMIT 5";
+	var query = 'PREFIX b2v: <http://bio2vec.net/function#>\n' +
+	    'PREFIX MGI: <http://www.informatics.jax.org/gene/MGI_>\n' +
+	    'PREFIX obo: <http://purl.obolibrary.org/>\n' +
+	    'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n' +
+	    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
+	    'SELECT ?sim ?dis (b2v:similarity(?sim, MGI:97490) as ?val) \n' +
+	    '{\n' +
+	    ' ?sim b2v:mostSimilar(MGI:97490 10000) .\n' +
+	    ' ?sim a obo:disease .\n' +
+	    ' ?sim rdfs:label ?dis\n' +
+	    '}\n';
 	this.setState({ query: query });
     }
 
     handleExample2Click(event) {
-	var query = "PREFIX b2v: <http://bio2vec.net/function#> \nSELECT ?o ?sim {?s ?p ?o .  ?sim b2v:mostSimilar(?o 5)} \nLIMIT 20";
+	var query = 'PREFIX b2v: <http://bio2vec.net/function#> \n' +
+	    'SELECT ?o ?sim {?s ?p ?o .  ?sim b2v:mostSimilar(?o 5)} \n' +
+	    'LIMIT 20\n';
 	this.setState({ query: query });
     }
 
