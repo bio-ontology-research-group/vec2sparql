@@ -33,9 +33,16 @@ class App extends Component {
     }
 
     handleExample2Click(event) {
-	var query = 'PREFIX b2v: <http://bio2vec.net/function#> \n' +
-	    'SELECT ?o ?sim {?s ?p ?o .  ?sim b2v:mostSimilar(?o 5)} \n' +
-	    'LIMIT 20\n';
+	var query = 'PREFIX b2v: <http://bio2vec.net/function#>\n' +
+	    'PREFIX MGI: <http://www.informatics.jax.org/gene/MGI_>\n' +
+	    'PREFIX obo: <http://purl.obolibrary.org/>\n' +
+	    'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n' +
+	    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
+	    'SELECT ?sim ? (b2v:similarity(?sim, MGI:97490) as ?val) \n' +
+	    '{\n' +
+	    ' ?sim b2v:mostSimilar(MGI:97490 100) .\n' +
+	    ' {?sim a obo:phenotype } UNION {?sim a obo:function} .\n' +
+	    '}\n';
 	this.setState({ query: query });
     }
 
@@ -51,11 +58,14 @@ class App extends Component {
 		<h1 className="App-title">Vec2SPARQL</h1>
 		</header>
 		<main className="container">
-		<p><a href="/#" onClick={this.handleExample1Click} >Example 1</a>
-		&nbsp;&nbsp;<a href="/#" onClick={this.handleExample2Click} >Example 2</a>
-	    </p>
-		<div className="text-center">
-		<form className="form form-sparql" action="/ds/query" method="get">
+		<div className="form-sparql">
+		<ul className="list-unstyled">
+		<li>Example 1. Select disease associations of Pax6 (MGI:97490) gene.
+		<a href="/#" onClick={this.handleExample1Click}> show</a></li>
+		<li>Example 2. Select function and phenotype  associations of Pax6 (MGI:97490) gene.
+		<a href="/#" onClick={this.handleExample2Click}> show</a></li>
+		</ul>
+		<form className="form" action="/ds/query" method="get">
 		<div className="form-group row">
 		<label class="col-sm-3" for="query">SPARQL Query</label>
 		<div class="col-sm-9">
