@@ -68,6 +68,9 @@ public class mostSimilar extends PFuncSimpleAndList {
 	    return IterLib.noResults(execCxt);
 	}
 	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
+	if (arr.length() == 0) {
+	    return IterLib.noResults(execCxt);
+	}
 	obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
 	String res = obj.get("@model_factor").toString();
 	

@@ -16,7 +16,7 @@ public class Main {
 
     public void run(String[] args) {
 	LogCtl.setJavaLogging();
-	Dataset ds = RDFDataMgr.loadDataset("data/graph.nt");
+	Dataset ds = RDFDataMgr.loadDataset("data/graph.ttl");
 
 	
 	FunctionRegistry.get().put("http://bio2vec.net/function#similarity",
