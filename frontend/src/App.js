@@ -38,7 +38,7 @@ class App extends Component {
 	    'PREFIX obo: <http://purl.obolibrary.org/>\n' +
 	    'PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n' +
 	    'PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n' +
-	    'SELECT ?sim ? (b2v:similarity(?sim, MGI:97490) as ?val) \n' +
+	    'SELECT ?sim (b2v:similarity(?sim, MGI:97490) as ?val) \n' +
 	    '{\n' +
 	    ' ?sim b2v:mostSimilar(MGI:97490 100) .\n' +
 	    ' {?sim a obo:phenotype } UNION {?sim a obo:function} .\n' +
