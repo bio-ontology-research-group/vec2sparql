@@ -108,7 +108,7 @@ class App extends Component {
 		</div>
 		</div>
 		<div className="form-group row">
-		<label for="dataset" class="col-sm-3">Output format</label>
+		<label for="dataset" class="col-sm-3">Dataset</label>
 		<div className="col-sm-9">
 		<select id="dataset" class="form-control" value={this.state.action} onChange={this.handleActionChange}>
 		<option selected value="/graph_embeddings/query">MGI</option>
