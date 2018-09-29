@@ -6,11 +6,13 @@ import java.util.Map;
 
 public class MostSimPropertyFunctionFactory implements PropertyFunctionFactory {
 
+    String dataset;
     
-    public MostSimPropertyFunctionFactory() {
+    public MostSimPropertyFunctionFactory(String dataset) {
+	this.dataset = dataset;
     }
 
     public PropertyFunction create(String uri) {
-	return new mostSimilar();
+	return new mostSimilar(this.dataset);
     }
 }

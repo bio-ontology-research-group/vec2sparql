@@ -6,10 +6,13 @@ import java.util.Map;
 
 public class SimFunctionFactory implements FunctionFactory {
 
-    public SimFunctionFactory() {
+    String dataset;
+    
+    public SimFunctionFactory(String dataset) {
+	this.dataset = dataset;
     }
 
     public Function create(String uri) {
-	return new similarity();
+	return new similarity(this.dataset);
     }
 }
