@@ -16,6 +16,6 @@ ENV PATH="/app/sparqlvec/bin:${PATH}"
 
 WORKDIR /
 
-EXPOSE 3030
+EXPOSE 3330
 
 ENTRYPOINT ["sparqlvec"]
