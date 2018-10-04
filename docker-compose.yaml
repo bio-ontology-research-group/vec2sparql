@@ -2,19 +2,19 @@ version: "3"
 
 services:
 
+frontend:
+    build: ./frontend
+    networks:
+      - net
+    ports:
+      - 80:80
+
   backend:
     build: .
     volumes:
       - /data/vec2sparql/:/data/
     networks:
       - net 
-
-  frontend:
-    build: ./frontend
-    networks:
-      - net
-    ports:
-      - 85:80
 
   es:
     build: ./elasticsearch
