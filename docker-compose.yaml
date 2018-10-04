@@ -2,7 +2,7 @@ version: "3"
 
 services:
 
-frontend:
+  frontend:
     build: ./frontend
     networks:
       - net
