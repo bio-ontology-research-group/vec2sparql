@@ -17,8 +17,11 @@ import org.json.*;
 
 public class similarity extends FunctionBase2 {
 
-    public similarity() {
+    String dataset;
+    
+    public similarity(String dataset) {
 	super();
+	this.dataset = dataset;
     }
 
     public double roundTo3(double a) {
@@ -35,7 +38,7 @@ public class similarity extends FunctionBase2 {
 				.put("id", new JSONArray().put(v1).put(v2))))))
 				     
 	    .toString();
-	JSONObject obj = Utils.queryIndex(query);
+	JSONObject obj = Utils.queryIndex(this.dataset, query);
 	if (obj != null) {
 	    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	    if (arr.length() == 2) {

@@ -32,8 +32,11 @@ import org.apache.http.impl.client.*;
 
 public class mostSimilar extends PFuncSimpleAndList {
 
-    public mostSimilar() {
+    String dataset;
+    
+    public mostSimilar(String dataset) {
 	super();
+	this.dataset = dataset;
     }
 
     @Override
@@ -63,7 +66,7 @@ public class mostSimilar extends PFuncSimpleAndList {
 		      .put("id", v)))
 	    .toString();
 
-	JSONObject obj = Utils.queryIndex(query);
+	JSONObject obj = Utils.queryIndex(this.dataset, query);
 	if (obj == null) {
 	    return IterLib.noResults(execCxt);
 	}
@@ -73,10 +76,9 @@ public class mostSimilar extends PFuncSimpleAndList {
 	}
 	obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
 	String res = obj.get("@model_factor").toString();
-	
 	JSONArray eArray = new JSONArray();
 	for (String x: res.split(" ")) {
-	    eArray.put(Double.parseDouble(x.split("\\|")[1]));
+	    eArray.put(Double.valueOf(x.split("\\|")[1]));
 	}
 	query = new JSONObject()
 	    .put("query", new JSONObject()
@@ -94,9 +96,14 @@ public class mostSimilar extends PFuncSimpleAndList {
 		 .put(new JSONObject()
 		      .put("_score", "desc")))
 	    .put("size", size)
-	    .toString();
+	    .toString()
+	    .replaceAll("0,", "0.0,")
+	    .replaceAll("0]", "0.0]");
 	
-	obj = Utils.queryIndex(query);
+	obj = Utils.queryIndex(this.dataset, query);	
+	if (obj == null) {
+	    return IterLib.noResults(execCxt);
+	}
 	arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	for (int i = 0; i < arr.length(); i++) {
 	    obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");

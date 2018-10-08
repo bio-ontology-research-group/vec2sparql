@@ -10,17 +10,21 @@ import org.apache.http.util.*;
 import org.apache.http.entity.*;
 import org.apache.http.impl.client.*;
 
+import org.apache.jena.query.ARQ;
+import org.apache.jena.sparql.util.*;
+
 
 public class Utils {
     
-    public static final String ELASTIC_INDEX_URI = "http://10.254.145.46:9200/bio2vec/graph_embeddings/_search";
+    public static final String ELASTIC_INDEX_URI = "http://10.254.145.46:9200/bio2vec/";
 
-    public static JSONObject queryIndex(String query) {
+    public static JSONObject queryIndex(String dataset, String query) {
 	CloseableHttpClient client = HttpClients.createDefault();
 	JSONObject result = null;
 	try {
 	    try {
-		HttpPost post = new HttpPost(ELASTIC_INDEX_URI);
+		HttpPost post = new HttpPost(ELASTIC_INDEX_URI +
+					     dataset + "/_search");
 		StringEntity requestEntity = new StringEntity(query,
 							      ContentType.APPLICATION_JSON);
 		post.setEntity(requestEntity);
