@@ -2,10 +2,10 @@
 import requests
 import json
 
-ELASTIC_INDEX_URL = 'http://10.254.145.46:9200/bio2vec/patient_embeddings/'
+ELASTIC_INDEX_URL = 'http://es:9200/bio2vec/patient_embeddings/'
 
 def main():
-    with open('data/patients_embeddings.txt') as f:
+    with open('/data/patients_embeddings.txt') as f:
         ind = 1
         for line in f:
             it = line.strip().split('\t')
