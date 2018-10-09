@@ -1,0 +1,47 @@
+version: "3"
+
+services:
+
+  frontend:
+    build: ./frontend
+    networks:
+      - net
+    ports:
+      - 80:80
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+
+  backend:
+    build: .
+    volumes:
+      - /data/vec2sparql/data/:/data/
+    networks:
+      - net 
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+  es:
+    build: ./elasticsearch
+    networks:
+      - net
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    volumes:
+      - /data/vec2sparql/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - net
+    security_opt:
+      - label:user:root
+      - label:role:root
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+      
+networks:
+  net:
+    driver: bridge
