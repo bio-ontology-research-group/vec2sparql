@@ -29,6 +29,7 @@ services:
       - net
     environment:
       - discovery.type=single-node
+      - xpack.security.enabled=false
     volumes:
       - /data/vec2sparql/elasticsearch:/usr/share/elasticsearch/data
     networks:
