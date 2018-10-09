@@ -3,7 +3,7 @@ FROM python:3
 WORKDIR /app
 
 RUN pip install --upgrade pip && \
-  pip install requests
+  pip install requests click
 
 COPY index.py .
 
