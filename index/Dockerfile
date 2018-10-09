@@ -1,10 +1,10 @@
 FROM python:3
+RUN pip install --upgrade pip
 
 WORKDIR /app
 
-RUN pip install --upgrade pip && \
-  pip install requests click
+COPY . .
 
-COPY index.py .
+RUN pip install -r requirements.txt
 
 ENTRYPOINT ["python", "index.py"]
