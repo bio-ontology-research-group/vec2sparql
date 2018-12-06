@@ -1,4 +1,4 @@
-package bio2vec;
+package bio2vec.jena;
 
 import org.apache.jena.sparql.pfunction.PropertyFunction;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory;

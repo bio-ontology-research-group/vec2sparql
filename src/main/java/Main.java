@@ -10,7 +10,8 @@ import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
 import org.apache.jena.query.ARQ;
-import bio2vec.*;
+import bio2vec.jena.*;
+import bio2vec.Functions;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
 
@@ -43,9 +44,9 @@ public class Main {
 	    Dataset ds = RDFDataMgr.loadDataset(files[i]);
 	    fsb.add("/" + datasets[i], ds, true);
 	    FunctionRegistry.get()
-		.put("http://bio2vec.net/" + datasets[i] + "/function#similarity",
+		.put(Functions.NAMESPACE + datasets[i] + "/function#similarity",
 		     new SimFunctionFactory(datasets[i]));
-	    reg.put("http://bio2vec.net/" + datasets[i] + "/function#mostSimilar",
+	    reg.put(Functions.NAMESPACE + datasets[i] + "/function#mostSimilar",
 		    new MostSimPropertyFunctionFactory(datasets[i]));
 	    PropertyFunctionRegistry.set(ARQ.getContext(), reg);
 	}

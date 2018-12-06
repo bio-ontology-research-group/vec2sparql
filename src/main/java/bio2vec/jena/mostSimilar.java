@@ -1,4 +1,4 @@
-package bio2vec;
+package bio2vec.jena;
 
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
@@ -30,6 +30,8 @@ import org.apache.http.util.*;
 import org.apache.http.entity.*;
 import org.apache.http.impl.client.*;
 
+import bio2vec.Functions;
+
 public class mostSimilar extends PFuncSimpleAndList {
 
     String dataset;
@@ -57,60 +59,16 @@ public class mostSimilar extends PFuncSimpleAndList {
 	String v = object.getArg(0).toString();
 	int size = Integer.parseInt(object.getArg(1).getLiteralLexicalForm().toString());
 
+	ArrayList<String> arr = Functions.mostSimilar(v, size);
+	if (arr.size() == 0) {
+	    return IterLib.noResults(execCxt);
+	}
 	ArrayList<Node> result = new ArrayList<Node>();
-	
-	// double[] e = embeddings.get(v);
-	String query = new JSONObject()
-	    .put("query", new JSONObject()
-		 .put("term", new JSONObject()
-		      .put("id", v)))
-	    .toString();
+        for (int i = 0; i < arr.size(); i++) {
+	    result.add(NodeFactory.createURI(arr.get(i)));
+	}
 
-	JSONObject obj = Utils.queryIndex(this.dataset, query);
-	if (obj == null) {
-	    return IterLib.noResults(execCxt);
-	}
-	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
-	if (arr.length() == 0) {
-	    return IterLib.noResults(execCxt);
-	}
-	obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
-	String res = obj.get("@model_factor").toString();
-	JSONArray eArray = new JSONArray();
-	for (String x: res.split(" ")) {
-	    eArray.put(Double.valueOf(x.split("\\|")[1]));
-	}
-	query = new JSONObject()
-	    .put("query", new JSONObject()
-		 .put("function_score", new JSONObject()
-		      .put("script_score", new JSONObject()
-			   .put("script", new JSONObject()
-				.put("inline", "payload_vector_score")
-					.put("lang", "native")
-				.put("params", new JSONObject()
-				     .put("field", "@model_factor")
-				     .put("vector", eArray)
-				     .put("cosine", true))))
-		      .put("boost_mode", "replace")))
-	    .put("sort", new JSONArray()
-		 .put(new JSONObject()
-		      .put("_score", "desc")))
-	    .put("size", size)
-	    .toString()
-	    .replaceAll("0,", "0.0,")
-	    .replaceAll("0]", "0.0]");
-	
-	obj = Utils.queryIndex(this.dataset, query);	
-	if (obj == null) {
-	    return IterLib.noResults(execCxt);
-	}
-	arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
-	for (int i = 0; i < arr.length(); i++) {
-	    obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
-	    res = obj.get("id").toString();
-	    result.add(NodeFactory.createURI(res));
-	}
-        if (Var.isVar(subject)) {
+	if (Var.isVar(subject)) {
             
             // Case: Subject is variable. Return all results.
             
