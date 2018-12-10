@@ -13,7 +13,7 @@ import bio2vec.Functions;
 public class SimilarityFunction implements Function {
 
     public String getURI() {
-	return Functions.NAMESPACE + "similarity";
+	return Functions.NAMESPACE + "function/similarity";
     }
 
     public Value evaluate(ValueFactory valueFactory, Value... args)

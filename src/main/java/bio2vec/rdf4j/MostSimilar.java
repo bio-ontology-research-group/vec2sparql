@@ -16,7 +16,7 @@ public class MostSimilar implements InverseMagicProperty {
 
     @Override
     public String getURI() {
-	return Functions.NAMESPACE + "mostSimilar";
+	return Functions.NAMESPACE + "function/mostSimilar";
     }
 
     @Override
