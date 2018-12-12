@@ -3,9 +3,9 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.zip.GZIPInputStream;
 import org.apache.jena.fuseki.embedded.FusekiServer;
-import org.apache.jena.query.DatasetFactory;
-import org.apache.jena.query.Dataset;
-import org.apache.jena.atlas.logging.LogCtl;
+import org.apache.jena.query.*;
+import org.apache.jena.rdf.model.*;
+import org.apache.jena.vocabulary.*;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.function.FunctionRegistry;
 import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
@@ -14,43 +14,48 @@ import bio2vec.jena.*;
 import bio2vec.Functions;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Main {
 
+    Logger logger;
+
     @Parameter(names={"--port", "-p"}, required=false)
     int port = 3330;
     
+
+    public Main() {
+	logger = LoggerFactory.getLogger(Main.class);
+    }
     
-    public void run() {
-	LogCtl.setJavaLogging();
+    public void run() throws Exception{
 
-	String[] datasets = new String[]{
-	    "graph_embeddings",
-	    "patient_embeddings"
-	};
-	String[] files = new String[]{
-	    "data/graph.ttl",
-	    "data/graph_patients.ttl"
-	};
-
+	logger.info("Run function is excecuted");
+	
 	FusekiServer.Builder fsb = FusekiServer.create()
 	    .setPort(this.port);
 
 	final PropertyFunctionRegistry reg = PropertyFunctionRegistry
 	    .chooseRegistry(ARQ.getContext());
 	    
-	for (int i = 0; i < datasets.length; i++) {
-	    Dataset ds = RDFDataMgr.loadDataset(files[i]);
-	    fsb.add("/" + datasets[i], ds, true);
-	    FunctionRegistry.get()
-		.put(Functions.NAMESPACE + datasets[i] + "/function#similarity",
-		     new SimFunctionFactory(datasets[i]));
-	    reg.put(Functions.NAMESPACE + datasets[i] + "/function#mostSimilar",
-		    new MostSimPropertyFunctionFactory(datasets[i]));
-	    PropertyFunctionRegistry.set(ARQ.getContext(), reg);
-	}
+	FunctionRegistry.get()
+	    .put(Functions.NAMESPACE + "function#similarity",
+		 new SimFunctionFactory());
+	FunctionRegistry.get()
+	    .put(Functions.NAMESPACE + "function#getX",
+		 new GetXFunctionFactory());
+	FunctionRegistry.get()
+	    .put(Functions.NAMESPACE + "function#getY",
+		 new GetYFunctionFactory());
 
+	reg.put(Functions.NAMESPACE + "function#mostSimilar",
+		new MostSimPropertyFunctionFactory());
+	PropertyFunctionRegistry.set(ARQ.getContext(), reg);
+	Dataset ds = DatasetFactory.create();
+	fsb.add("/ds", ds, true);
+	
 	FusekiServer fs = fsb.build();
 	fs.start();
     }

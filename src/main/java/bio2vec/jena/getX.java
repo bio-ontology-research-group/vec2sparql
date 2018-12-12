@@ -3,7 +3,7 @@ package bio2vec.jena;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.function.FunctionBase3;
+import org.apache.jena.sparql.function.FunctionBase2;
 import org.apache.jena.sparql.util.FmtUtils;
 import org.apache.jena.ext.xerces.util.URI;
 import java.util.Map;
@@ -18,14 +18,14 @@ import org.json.*;
 
 import bio2vec.Functions;
 
-public class similarity extends FunctionBase3 {
+public class getX extends FunctionBase2 {
 
-    public similarity() {
+    public getX() {
 	super();
     }
 
     
-    public NodeValue exec(NodeValue nv1, NodeValue nv2, NodeValue nv3) {
+    public NodeValue exec(NodeValue nv1, NodeValue nv2) {
 	Node n1 = nv1.asNode();
 	if (!n1.isURI())
             throw new ExprEvalException(
@@ -34,19 +34,14 @@ public class similarity extends FunctionBase3 {
         if (!n2.isURI())
             throw new ExprEvalException(
 		"Not a URI: " + nv2.asString());
-	Node n3 = nv3.asNode();
-        if (!n2.isURI())
-            throw new ExprEvalException(
-		"Not a URI: " + nv3.asString());
 	String d = null;
 	try {
 	    d = new URI(nv1.asString()).getFragment();
 	} catch (URI.MalformedURIException  e) {
 	    throw new ExprEvalException("Not a URI: " + nv1.asString());
 	}
-	String v1 = nv2.asString();
-	String v2 = nv3.asString();
-	double sim = Functions.cosineSimilarity(d, v1, v2);
-	return NodeValue.makeNodeDouble(sim);
+	String v = nv2.asString();
+	double x = Functions.getX(d, v);
+	return NodeValue.makeNodeDouble(x);
     }
 }

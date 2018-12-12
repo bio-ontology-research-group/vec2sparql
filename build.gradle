@@ -27,6 +27,7 @@ dependencies {
     compile 'org.apache.httpcomponents:httpclient:4.5.6'
     compile 'org.json:json:20180130'
     compile 'com.beust:jcommander:1.72'
+    compile 'org.eclipse.rdf4j:rdf4j-runtime:2.4.2'
     // Declare the dependency for your favourite test framework you want to use in your tests.
     // TestNG is also supported by the Gradle Test task. Just change the
     // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
