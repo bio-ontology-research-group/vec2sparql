@@ -23,6 +23,10 @@ import org.apache.jena.sparql.util.IterLib;
 import java.io.*;
 import java.util.*;
 import org.json.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.apache.jena.ext.xerces.util.URI;
+
 
 import org.apache.http.*;
 import org.apache.http.client.methods.*;
@@ -35,31 +39,46 @@ import bio2vec.Functions;
 public class mostSimilar extends PFuncSimpleAndList {
 
     String dataset;
+    Logger logger;
     
-    public mostSimilar(String dataset) {
+    public mostSimilar() {
 	super();
-	this.dataset = dataset;
+	logger = LoggerFactory.getLogger(mostSimilar.class);
     }
 
     @Override
-    public void build(PropFuncArg argSubject, Node predicate, PropFuncArg argObject, ExecutionContext execCxt) {
+    public void build(PropFuncArg argSubject, Node predicate,
+		      PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt);
-
-        if (argObject.getArgListSize() != 2)
-            throw new QueryBuildException("Object list must contain exactly two arguments, the URI and number of most similar nodes") ;
+	if (argObject.getArgListSize() != 3)
+            throw new QueryBuildException(
+		"Object list must contain exactly three arguments, " +
+		"the dataset IRI, entity IRI and number of most similar nodes");
+	
+	if (!argObject.getArg(0).isURI() ||
+	    !argObject.getArg(1).isURI() || !argObject.getArg(2).isLiteral()) {
+            throw new QueryBuildException("Invalid arguments format");
+        }
+        
     }
 
     @Override
-    public QueryIterator execEvaluated(final Binding binding, final Node subject, final Node predicate, final PropFuncArg object, final ExecutionContext execCxt) {
-
-        if (!object.getArg(0).isURI() || !object.getArg(1).isLiteral()) {
-            return IterLib.noResults(execCxt);
-        }
-                
-	String v = object.getArg(0).toString();
-	int size = Integer.parseInt(object.getArg(1).getLiteralLexicalForm().toString());
-
-	ArrayList<String> arr = Functions.mostSimilar(v, size);
+    public QueryIterator execEvaluated(final Binding binding,
+				       final Node subject,
+				       final Node predicate,
+				       final PropFuncArg object,
+				       final ExecutionContext execCxt) {
+	
+	String d = null;
+	try {
+	    d = new URI(object.getArg(0).getURI()).getFragment();
+	} catch (Exception e) {
+	    return IterLib.noResults(execCxt);
+	}
+	String v = object.getArg(1).toString();
+	int size = Integer.parseInt(
+	    object.getArg(2).getLiteralLexicalForm().toString());
+	ArrayList<String> arr = Functions.mostSimilar(d, v, size);
 	if (arr.size() == 0) {
 	    return IterLib.noResults(execCxt);
 	}

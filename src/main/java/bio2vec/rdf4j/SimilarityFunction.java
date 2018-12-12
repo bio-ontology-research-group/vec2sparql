@@ -13,17 +13,18 @@ import bio2vec.Functions;
 public class SimilarityFunction implements Function {
 
     public String getURI() {
-	return Functions.NAMESPACE + "similarity";
+	return Functions.NAMESPACE + "function#similarity";
     }
 
     public Value evaluate(ValueFactory valueFactory, Value... args)
 	throws ValueExprEvaluationException {
-	if (args.length != 2) {
+	if (args.length != 3) {
 	    throw new ValueExprEvaluationException("similarity function requires"
-						   + "exactly 2 arguments, got "
+						   + "exactly 3 arguments, got "
 						   + args.length);
 	}
-	double sim = Functions.sim(args[0].stringValue(), args[1].stringValue());
+	double sim = Functions.cosineSimilarity(
+	    args[0].stringValue(), args[1].stringValue(), args[2].stringValue());
 	return valueFactory.createLiteral(sim);
     }
 }

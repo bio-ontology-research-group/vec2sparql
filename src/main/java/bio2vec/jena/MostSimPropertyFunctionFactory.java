@@ -8,11 +8,11 @@ public class MostSimPropertyFunctionFactory implements PropertyFunctionFactory {
 
     String dataset;
     
-    public MostSimPropertyFunctionFactory(String dataset) {
+    public MostSimPropertyFunctionFactory() {
 	this.dataset = dataset;
     }
 
     public PropertyFunction create(String uri) {
-	return new mostSimilar(this.dataset);
+	return new mostSimilar();
     }
 }

@@ -13,14 +13,51 @@ import org.apache.http.impl.client.*;
 
 public class Functions {
     
-    public static final String ELASTIC_INDEX_URI = "http://es:9200/bio2vec/";
+    public static final String ELASTIC_INDEX_URI = "http://es:9200/bio2vec_test/";
     public static final String NAMESPACE = "http://bio2vec.net/";
 
-    public double roundTo3(double a) {
+    public static double roundTo3(double a) {
 	return (int)(a * 1000 + 0.5) / 1000.0;
     }
+
+    public static JSONObject getObject(String d, String v) {
+	String query = new JSONObject()
+	    .put("query", new JSONObject()
+		 .put("term", new JSONObject()
+		      .put("id", v)))
+	    .toString();
+
+	JSONObject obj = queryIndex(d, query);
+	if (obj == null) {
+	    return null;
+	}
+	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
+	if (arr.length() == 0) {
+	    return null;
+	}
+	obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
+	return obj;
+    }
     
-    public double cosineSimilarity(String v1, String v2) {
+    public static double getX(String d, String v) {
+	double res = 0.0;
+	JSONObject obj = getObject(d, v);
+	if (obj != null) {
+	    res = Double.parseDouble(obj.get("x").toString());
+	}
+	return roundTo3(res);
+    }
+
+    public static double getY(String d, String v) {
+	double res = 0.0;
+	JSONObject obj = getObject(d, v);
+	if (obj != null) {
+	    res = Double.parseDouble(obj.get("y").toString());
+	}
+	return roundTo3(res);
+    }
+    
+    public static double cosineSimilarity(String d, String v1, String v2) {
 	double res = 0.0;
 	String query = new JSONObject()
 	    .put("query", new JSONObject()
@@ -30,7 +67,7 @@ public class Functions {
 				.put("id", new JSONArray().put(v1).put(v2))))))
 				     
 	    .toString();
-	JSONObject obj = Utils.queryIndex(this.dataset, query);
+	JSONObject obj = queryIndex(d, query);
 	if (obj != null) {
 	    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	    if (arr.length() == 2) {
@@ -56,29 +93,18 @@ public class Functions {
 	return roundTo3(res);
     }
 
-    public static ArrayList<String> mostSimilar(String v, int size) {
+    public static ArrayList<String> mostSimilar(String d, String v, int size) {
 	ArrayList<String> result = new ArrayList<String>();
-	String query = new JSONObject()
-	    .put("query", new JSONObject()
-		 .put("term", new JSONObject()
-		      .put("id", v)))
-	    .toString();
-
-	JSONObject obj = Utils.queryIndex(this.dataset, query);
+	JSONObject obj = getObject(d, v);
 	if (obj == null) {
 	    return result;
 	}
-	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
-	if (arr.length() == 0) {
-	    return result;
-	}
-	obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
 	String res = obj.get("@model_factor").toString();
 	JSONArray eArray = new JSONArray();
 	for (String x: res.split(" ")) {
 	    eArray.put(Double.valueOf(x.split("\\|")[1]));
 	}
-	query = new JSONObject()
+	String query = new JSONObject()
 	    .put("query", new JSONObject()
 		 .put("function_score", new JSONObject()
 		      .put("script_score", new JSONObject()
@@ -98,11 +124,11 @@ public class Functions {
 	    .replaceAll("0,", "0.0,")
 	    .replaceAll("0]", "0.0]");
 	
-	obj = Utils.queryIndex(this.dataset, query);	
+	obj = queryIndex(d, query);	
 	if (obj == null) {
 	    return result;
 	}
-	arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
+	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	for (int i = 0; i < arr.length(); i++) {
 	    obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
 	    res = obj.get("id").toString();
