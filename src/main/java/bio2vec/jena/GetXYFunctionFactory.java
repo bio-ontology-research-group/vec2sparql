@@ -4,12 +4,12 @@ import org.apache.jena.sparql.pfunction.PropertyFunction;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory;
 import java.util.Map;
 
-public class GetXFunctionFactory implements PropertyFunctionFactory {
+public class GetXYFunctionFactory implements PropertyFunctionFactory {
     
-    public GetXFunctionFactory() {
+    public GetXYFunctionFactory() {
     }
 
     public PropertyFunction create(String uri) {
-	return new getX();
+	return new getXY();
     }
 }

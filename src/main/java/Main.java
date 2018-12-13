@@ -40,10 +40,8 @@ public class Main {
 	final PropertyFunctionRegistry reg = PropertyFunctionRegistry
 	    .chooseRegistry(ARQ.getContext());
 	    
-	reg.put(Functions.NAMESPACE + "function#getX",
-		new GetXFunctionFactory());
-	reg.put(Functions.NAMESPACE + "function#getY",
-		new GetYFunctionFactory());
+	reg.put(Functions.NAMESPACE + "function#getXY",
+		new GetXYFunctionFactory());
 	reg.put(Functions.NAMESPACE + "function#mostSimilar",
 		new MostSimPropertyFunctionFactory());
 	reg.put(Functions.NAMESPACE + "function#similarity",

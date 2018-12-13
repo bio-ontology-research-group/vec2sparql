@@ -90,8 +90,8 @@ public class mostSimilar extends PFuncListAndList {
         for (int i = 0; i < arr.size(); i++) {
 	    result.add(new Node[]{
 		    NodeFactory.createURI(arr.get(i)[0]),
-		    NodeValue.makeNodeDouble(Double.parseDouble(arr.get(i)[1])).asNode()
-		    NodeValue.makeNodeDouble(Double.parseDouble(arr.get(i)[2])).asNode()
+		    NodeValue.makeNodeDouble(Double.parseDouble(arr.get(i)[1])).asNode(),
+		    NodeValue.makeNodeDouble(Double.parseDouble(arr.get(i)[2])).asNode(),
 		    NodeValue.makeNodeDouble(Double.parseDouble(arr.get(i)[3])).asNode()
 		});
 	}

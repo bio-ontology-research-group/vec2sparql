@@ -39,13 +39,14 @@ public class Functions {
 	return obj;
     }
     
-    public static double getX(String d, String v) {
-	double res = 0.0;
+    public static double[] getXY(String d, String v) {
+	double x = 0.0, y = 0.0;
 	JSONObject obj = getObject(d, v);
 	if (obj != null) {
-	    res = Double.parseDouble(obj.get("x").toString());
+	    x = Double.parseDouble(obj.get("x").toString());
+	    y = Double.parseDouble(obj.get("y").toString());
 	}
-	return roundTo3(res);
+	return new double[] {roundTo3(x), roundTo3(y)};
     }
 
     public static double getY(String d, String v) {
@@ -134,7 +135,9 @@ public class Functions {
 	    String score = obj.get("_score").toString();
 	    obj = (JSONObject)obj.get("_source");
 	    String id = obj.get("id").toString();
-	    result.add(new String[]{id, score});
+	    String x = obj.get("x").toString();
+	    String y = obj.get("y").toString();
+	    result.add(new String[]{id, score, x, y});
 	}
         
 	return result;
