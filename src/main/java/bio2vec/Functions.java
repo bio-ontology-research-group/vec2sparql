@@ -93,8 +93,8 @@ public class Functions {
 	return roundTo3(res);
     }
 
-    public static ArrayList<String> mostSimilar(String d, String v, int size) {
-	ArrayList<String> result = new ArrayList<String>();
+    public static ArrayList<String[]> mostSimilar(String d, String v, int size) {
+	ArrayList<String[]> result = new ArrayList<String[]>();
 	JSONObject obj = getObject(d, v);
 	if (obj == null) {
 	    return result;
@@ -130,9 +130,11 @@ public class Functions {
 	}
 	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	for (int i = 0; i < arr.length(); i++) {
-	    obj = (JSONObject)((JSONObject)arr.get(i)).get("_source");
-	    res = obj.get("id").toString();
-	    result.add(res);
+	    obj = (JSONObject)arr.get(i);
+	    String score = obj.get("_score").toString();
+	    obj = (JSONObject)obj.get("_source");
+	    String id = obj.get("id").toString();
+	    result.add(new String[]{id, score});
 	}
         
 	return result;

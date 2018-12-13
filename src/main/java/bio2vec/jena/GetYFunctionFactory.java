@@ -1,15 +1,15 @@
 package bio2vec.jena;
 
-import org.apache.jena.sparql.function.Function;
-import org.apache.jena.sparql.function.FunctionFactory;
+import org.apache.jena.sparql.pfunction.PropertyFunction;
+import org.apache.jena.sparql.pfunction.PropertyFunctionFactory;
 import java.util.Map;
 
-public class GetYFunctionFactory implements FunctionFactory {
+public class GetYFunctionFactory implements PropertyFunctionFactory {
 
     public GetYFunctionFactory() {
     }
 
-    public Function create(String uri) {
+    public PropertyFunction create(String uri) {
 	return new getY();
     }
 }
