@@ -14,9 +14,10 @@ import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
 import org.apache.jena.sparql.engine.binding.Binding ;
+import org.apache.jena.sparql.engine.binding.BindingMap ;
 import org.apache.jena.sparql.engine.binding.BindingFactory ;
 import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
-import org.apache.jena.sparql.pfunction.PFuncSimpleAndList ;
+import org.apache.jena.sparql.pfunction.PFuncListAndList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.IterLib;
 import org.apache.jena.sparql.expr.ExprEvalException ;
@@ -34,36 +35,42 @@ import org.slf4j.LoggerFactory;
 import bio2vec.Functions;
 
 
-public class similarity extends PFuncSimpleAndList {
+public class getXY extends PFuncListAndList {
 
-    String dataset;
     Logger logger;
     
-    public similarity() {
+    public getXY() {
 	super();
-	logger = LoggerFactory.getLogger(similarity.class);
+	logger = LoggerFactory.getLogger(getXY.class);
     }
 
     @Override
     public void build(PropFuncArg argSubject, Node predicate,
 		      PropFuncArg argObject, ExecutionContext execCxt) {
         super.build(argSubject, predicate, argObject, execCxt);
-	if (argObject.getArgListSize() != 3)
+	if (argSubject.getArgListSize() != 2)
             throw new QueryBuildException(
-		"Object list must contain exactly three arguments, " +
-		"the dataset IRI and two entity IRIs");
+		"Subject list must contain exactly two arguments, " +
+		"x and y variables");
+        
+	if (argObject.getArgListSize() != 2)
+            throw new QueryBuildException(
+		"Object list must contain exactly two arguments, " +
+		"the dataset IRI and entity IRI");
+        
     }
 
     @Override
     public QueryIterator execEvaluated(final Binding binding,
-				       final Node subject,
+				       final PropFuncArg subject,
 				       final Node predicate,
 				       final PropFuncArg object,
 				       final ExecutionContext execCxt) {
-	if (!object.getArg(0).isURI() ||
-	    !object.getArg(1).isURI() || !object.getArg(2).isURI()) {
+
+	if (!object.getArg(0).isURI() || !object.getArg(1).isURI()) {
             throw new ExprEvalException("Invalid arguments format");
         }
+	
 	String d = null;
 	try {
 	    d = new URI(object.getArg(0).getURI()).getFragment();
@@ -71,15 +78,23 @@ public class similarity extends PFuncSimpleAndList {
             throw new ExprEvalException("Dataset format is wrong") ;
 	}
 
-	if (!Var.isVar(subject))
-            throw new ExprEvalException("Subject is not a variable (" + subject + ")") ;
+	Node xNode = subject.getArg(0);
+	Node yNode = subject.getArg(1);
 
-	String v1 = object.getArg(1).toString();
-	String v2 = object.getArg(2).toString();
-	double sim = Functions.cosineSimilarity(d, v1, v2);        
-        return IterLib.oneResult(
-	    binding, Var.alloc(subject),
-	    NodeValue.makeNodeDouble(sim).asNode(), execCxt);
+	if (!Var.isVar(xNode) || !Var.isVar(yNode))
+            throw new ExprEvalException("Subject should contain two variables") ;
+
+	String v = object.getArg(1).toString();
+	double[] x = Functions.getXY(d, v);
+
+	final Var xVar = Var.alloc(xNode);
+	final Var yVar = Var.alloc(yNode);
+
+	BindingMap b = BindingFactory.create(binding);
+	b.add(xVar, NodeValue.makeNodeDouble(x[0]).asNode());
+	b.add(yVar, NodeValue.makeNodeDouble(x[1]).asNode());
+	
+        return IterLib.result(b, execCxt);
     }
 
 }

@@ -37,7 +37,7 @@ public class MostSimilar implements InverseMagicProperty {
 	    throw new ValueExprEvaluationException(String.format("%s requires for second argument integer value", getURI()));
 	}
 
-	ArrayList<String> results = Functions.mostSimilar(d, v, size);
+	ArrayList<String[]> results = Functions.mostSimilar(d, v, size);
 
 	return new CloseableIteratorIteration<List<? extends Value>, QueryEvaluationException>(SingleValueToListTransformer.transform(new Iterator<Value>() {
 		
@@ -50,7 +50,7 @@ public class MostSimilar implements InverseMagicProperty {
 		
 		@Override
 		public Value next() {
-		    return valueFactory.createIRI(results.get(pos++));
+		    return valueFactory.createIRI(results.get(pos++)[0]);
 		}
 		
 		@Override

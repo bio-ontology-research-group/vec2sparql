@@ -40,18 +40,12 @@ public class Main {
 	final PropertyFunctionRegistry reg = PropertyFunctionRegistry
 	    .chooseRegistry(ARQ.getContext());
 	    
-	FunctionRegistry.get()
-	    .put(Functions.NAMESPACE + "function#similarity",
-		 new SimFunctionFactory());
-	FunctionRegistry.get()
-	    .put(Functions.NAMESPACE + "function#getX",
-		 new GetXFunctionFactory());
-	FunctionRegistry.get()
-	    .put(Functions.NAMESPACE + "function#getY",
-		 new GetYFunctionFactory());
-
+	reg.put(Functions.NAMESPACE + "function#getXY",
+		new GetXYFunctionFactory());
 	reg.put(Functions.NAMESPACE + "function#mostSimilar",
 		new MostSimPropertyFunctionFactory());
+	reg.put(Functions.NAMESPACE + "function#similarity",
+		new SimFunctionFactory());
 	PropertyFunctionRegistry.set(ARQ.getContext(), reg);
 	Dataset ds = DatasetFactory.create();
 	fsb.add("/ds", ds, true);

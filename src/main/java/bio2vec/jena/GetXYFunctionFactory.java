@@ -4,12 +4,12 @@ import org.apache.jena.sparql.pfunction.PropertyFunction;
 import org.apache.jena.sparql.pfunction.PropertyFunctionFactory;
 import java.util.Map;
 
-public class SimFunctionFactory implements PropertyFunctionFactory {
-
-    public SimFunctionFactory() {
+public class GetXYFunctionFactory implements PropertyFunctionFactory {
+    
+    public GetXYFunctionFactory() {
     }
 
     public PropertyFunction create(String uri) {
-	return new similarity();
+	return new getXY();
     }
 }
