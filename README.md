@@ -37,18 +37,11 @@ docker build -t umids/vec2sparql-load-embeddings index
 **Run**
 
 ```bash
-docker run -it --network vec2sparql_net -v $PWD/workspace/data:/data umids/vec2sparql-load-embeddings -d Patients -f /data/patients_embeddings.txt
+docker run -it --network vec2sparql_net -v $PWD/workspace/data:/data umids/vec2sparql-load-embeddings -d patient_embeddings -f /data/patients_embeddings.txt
 ```
 
 Datasets can be either:
 
-* `Patients`
-* `MGI`
-
-Or maybe
-
-* graph_embeddings
-* patient_embeddings
-
-It needs to be tested
+* `graph_embeddings`
+* `patient_embeddings`
 
