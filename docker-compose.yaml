@@ -16,7 +16,9 @@ services:
   backend:
     build: .
     volumes:
-      - $PWD/workspace/data/:/data/
+      - $PWD/workspace/data:/data
+    ports:
+      - 3330:3330
     networks:
       - net 
     logging:

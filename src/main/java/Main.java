@@ -29,8 +29,8 @@ public class Main {
 	    "patient_embeddings"
 	};
 	String[] files = new String[]{
-	    "data/graph.ttl",
-	    "data/graph_patients.ttl"
+	    "/data/graph.ttl",
+	    "/data/graph_patients.ttl"
 	};
 
 	FusekiServer.Builder fsb = FusekiServer.create()

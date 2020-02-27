@@ -11,13 +11,22 @@ docker-compose up
 
 > Files goes to `workspace/`
 
+⚠️ ElasticSearch might face permissions issues
+
+```bash
+sudo chmod 777 -R workspace/
+```
+
 ### Load index
 
 The [index](https://github.com/bio-ontology-research-group/vec2sparql/tree/master/index) needs to be run before to load embeddings in Elasticsearch. Do it before `docker-compose up` 
 
-```bash
-python3 index.py -d patient_data -f ../workspace/data/patients_embeddings.txt
-```
+You will need the following files to run the index:
+
+* `graph.ttl`
+* `graph_embeddings.txt.gz`
+* `graph_patients.ttl`
+* `patients_embeddings.txt`
 
 **Build**
 
@@ -28,6 +37,18 @@ docker build -t umids/vec2sparql-load-embeddings index
 **Run**
 
 ```bash
-docker run -it -v $PWD/workspace/data:/data umids/vec2sparql-load-embeddings -d patient_data -f /data/patients_embeddings.txt
+docker run -it --network vec2sparql_net -v $PWD/workspace/data:/data umids/vec2sparql-load-embeddings -d Patients -f /data/patients_embeddings.txt
 ```
+
+Datasets can be either:
+
+* `Patients`
+* `MGI`
+
+Or maybe
+
+* graph_embeddings
+* patient_embeddings
+
+It needs to be tested
 
