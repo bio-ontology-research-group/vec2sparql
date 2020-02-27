@@ -16,7 +16,7 @@ services:
   backend:
     build: .
     volumes:
-      - /data/vec2sparql/data/:/data/
+      - $PWD/workspace/data/:/data/
     networks:
       - net 
     logging:
@@ -31,7 +31,7 @@ services:
       - discovery.type=single-node
       - xpack.security.enabled=false
     volumes:
-      - /data/vec2sparql/elasticsearch:/usr/share/elasticsearch/data
+      - $PWD/workspace/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - net
     security_opt:
