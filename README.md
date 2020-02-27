@@ -28,12 +28,6 @@ You will need the following files to run the index:
 * `graph_patients.ttl`
 * `patients_embeddings.txt`
 
-**Build**
-
-```bash
-docker build -t umids/vec2sparql-load-embeddings index
-```
-
 **Run**
 
 ```bash
@@ -45,3 +39,10 @@ Datasets can be either:
 * `graph_embeddings`
 * `patient_embeddings`
 
+**Build manually**
+
+We are pulling the indexing container from DockerHub, but you can also build it manually
+
+```bash
+docker build -t umids/vec2sparql-load-embeddings index
+```
