@@ -43,6 +43,32 @@ Datasets (`-d`) can be either:
 
 > Go to http://localhost/ to query the embeddings generated
 
+Do hard reload at `http://localhost/patient_embeddings/query?query=select+*+{%0D%0A%3Fs+%3Fp+%3Fo+.+%0D%0A}+limit+100&format=csv` to get results of the query
+
+Or directly from the backend: `localhost:3330/patient_embeddings/query?query=select+*+{%0D%0A%3Fs+%3Fp+%3Fo+.+%0D%0A}+limit+100&format=csv`
+
+More complexe query:
+
+```
+localhost:3330/protein_embeddings/query?query=PREFIX+b2v%3A+<http%3A%2F%2Fbio2vec.net%2Fgraph_embeddings%2Ffunction%23>%0D%0APREFIX+MGI%3A+<http%3A%2F%2Fwww.informatics.jax.org%2Fgene%2FMGI_>%0D%0APREFIX+obo%3A+<http%3A%2F%2Fpurl.obolibrary.org%2F>%0D%0APREFIX+ncbigene%3A+<http%3A%2F%2Fbio2rdf.org%2Fncbigene%2F>%0D%0APREFIX+rdf%3A+<http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23>%0D%0APREFIX+rdfs%3A+<http%3A%2F%2Fwww.w3.org%2F2000%2F01%2Frdf-schema%23>%0D%0ASELECT+%3Fsim+%3Flabel+(b2v%3Asimilarity(%3Fsim%2C+ncbigene%3A79589)+as+%3Fval)+%0D%0A{%0D%0A+%3Fsim+b2v%3AmostSimilar(ncbigene%3A79589+10)+.%0D%0A+%3Fsim+rdfs%3Alabel+%3Flabel+.%0D%0A}%0D%0A&format=csv
+```
+
+```
+PREFIX b2v: <http://bio2vec.net/graph_embeddings/function#>
+PREFIX MGI: <http://www.informatics.jax.org/gene/MGI_>
+PREFIX obo: <http://purl.obolibrary.org/>
+PREFIX ncbigene: <http://bio2rdf.org/ncbigene:>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?sim 
+{
+ ?sim b2v:mostSimilar(ncbigene:79589 10000) .
+}
+
+```
+
+
+
 **Build manually**
 
 We are pulling the indexing container from DockerHub, but you can also build it manually

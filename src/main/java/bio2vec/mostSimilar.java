@@ -100,7 +100,8 @@ public class mostSimilar extends PFuncSimpleAndList {
 	    .replaceAll("0,", "0.0,")
 	    .replaceAll("0]", "0.0]");
 	
-	obj = Utils.queryIndex(this.dataset, query);	
+	// Query ElasticSearch index:
+	obj = Utils.queryIndex(this.dataset, query);
 	if (obj == null) {
 	    return IterLib.noResults(execCxt);
 	}
