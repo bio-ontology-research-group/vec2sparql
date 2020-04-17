@@ -113,6 +113,7 @@ class App extends Component {
 		<select id="dataset" class="form-control" value={this.state.action} onChange={this.handleActionChange}>
 		<option selected value="/graph_embeddings/query">MGI</option>
 		<option value="/patient_embeddings/query">Patients</option>
+		<option value="/protein_embeddings/query">Proteins</option>
 		</select>
 		</div>
 		</div>

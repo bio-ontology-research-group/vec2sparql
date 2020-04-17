@@ -6,7 +6,7 @@ SPARQL Endpoint with functions for computing embedding similarities
 A `graph.ttl` and embeddings needs to be provided in `workspace/data` folder
 
 ```bash
-docker-compose up
+docker-compose up --build
 ```
 
 > Files goes to `workspace/`
@@ -28,16 +28,20 @@ You will need the following files to run the index:
 * `graph_patients.ttl`
 * `patients_embeddings.txt`
 
-**Run**
+**To load index run:**
 
 ```bash
 docker run -it --network vec2sparql_net -v $PWD/workspace/data:/data umids/vec2sparql-load-embeddings -d patient_embeddings -f /data/patients_embeddings.txt
+
+docker run -it --network vec2sparql_net -v $PWD/workspace/data:/data umids/vec2sparql-load-embeddings -d protein_embeddings -f /data/protein_embeddings.txt
 ```
 
-Datasets can be either:
+Datasets (`-d`) can be either:
 
 * `graph_embeddings`
 * `patient_embeddings`
+
+> Go to http://localhost/ to query the embeddings generated
 
 **Build manually**
 
