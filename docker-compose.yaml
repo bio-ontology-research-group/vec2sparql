@@ -16,7 +16,7 @@ services:
   backend:
     build: .
     volumes:
-      - $PWD/workspace/data:/data
+      - ./workspace/data:/data
     ports:
       - 3330:3330
     networks:
@@ -25,15 +25,19 @@ services:
       driver: json-file
       options:
         max-size: 10m
+  
+  # docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.6.2
   es:
-    build: ./elasticsearch
-    networks:
-      - net
+    # build: ./elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=false
-    volumes:
-      - $PWD/workspace/elasticsearch:/usr/share/elasticsearch/data
+    # ports:
+    #   - 9200:9200 
+    #   - 9300:9300 
+    # volumes:
+    #   - ./workspace/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - net
     security_opt:
