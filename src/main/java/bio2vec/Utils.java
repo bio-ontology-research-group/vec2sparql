@@ -16,7 +16,7 @@ import org.apache.jena.sparql.util.*;
 
 public class Utils {
     
-    public static final String ELASTIC_INDEX_URI = "http://es:9200/bio2vec/";
+    public static final String ELASTIC_INDEX_URI = "http://10.127.4.79:9200/";
 
     public static JSONObject queryIndex(String dataset, String query) {
 	CloseableHttpClient client = HttpClients.createDefault();
