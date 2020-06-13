@@ -13,7 +13,7 @@ import org.apache.http.impl.client.*;
 
 public class Functions {
     
-    public static final String ELASTIC_INDEX_URI = "http://es:9200/bio2vec_test/";
+    public static final String ELASTIC_INDEX_URI = "http://10.127.4.79:9200/";
     public static final String NAMESPACE = "http://bio2vec.net/";
 
     public static double roundTo3(double a) {

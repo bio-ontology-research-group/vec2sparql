@@ -4,7 +4,7 @@ import json
 import click as ck
 
 INDEX_NAME = 'bio2vec'
-ELASTIC_INDEX_URL = 'http://es:9200/{0}'.format(INDEX_NAME)
+ELASTIC_INDEX_URL = 'http://10.127.4.79:9200/{0}'.format(INDEX_NAME)
 
 @ck.command()
 @ck.option('--dataset', '-d', help='Dataset name')
