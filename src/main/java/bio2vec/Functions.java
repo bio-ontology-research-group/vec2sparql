@@ -73,9 +73,9 @@ public class Functions {
 	    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	    if (arr.length() == 2) {
 		obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
-		String[] vec1 = obj.get("@model_factor").toString().split(" ");
+		String[] vec1 = obj.get("embedding").toString().split(" ");
 		obj = (JSONObject)((JSONObject)arr.get(1)).get("_source");
-		String[] vec2 = obj.get("@model_factor").toString().split(" ");
+		String[] vec2 = obj.get("embedding").toString().split(" ");
 		double dotProduct = 0.0;
 		double normA = 0.0;
 		double normB = 0.0;
@@ -100,7 +100,7 @@ public class Functions {
 	if (obj == null) {
 	    return result;
 	}
-	String res = obj.get("@model_factor").toString();
+	String res = obj.get("embedding").toString();
 	JSONArray eArray = new JSONArray();
 	for (String x: res.split(" ")) {
 	    eArray.put(Double.valueOf(x.split("\\|")[1]));
@@ -113,7 +113,7 @@ public class Functions {
 				.put("inline", "payload_vector_score")
 					.put("lang", "native")
 				.put("params", new JSONObject()
-				     .put("field", "@model_factor")
+				     .put("field", "embedding")
 				     .put("vector", eArray)
 				     .put("cosine", true))))
 		      .put("boost_mode", "replace")))
