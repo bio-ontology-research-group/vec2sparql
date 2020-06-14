@@ -100,31 +100,20 @@ public class Functions {
 	if (obj == null) {
 	    return result;
 	}
-	String res = obj.get("embedding").toString();
-	JSONArray eArray = new JSONArray();
-	for (String x: res.split(" ")) {
-	    eArray.put(Double.valueOf(x.split("\\|")[1]));
-	}
+	
+	JSONArray eArray = obj.getJSONArray("embedding");
+	System.out.println(eArray.toString());
 	String query = new JSONObject()
 	    .put("query", new JSONObject()
-		 .put("function_score", new JSONObject()
-		      .put("script_score", new JSONObject()
-			   .put("script", new JSONObject()
-				.put("inline", "payload_vector_score")
-					.put("lang", "native")
-				.put("params", new JSONObject()
-				     .put("field", "embedding")
-				     .put("vector", eArray)
-				     .put("cosine", true))))
-		      .put("boost_mode", "replace")))
-	    .put("sort", new JSONArray()
-		 .put(new JSONObject()
-		      .put("_score", "desc")))
+			.put("script_score", new JSONObject()
+				.put("query", new JSONObject()
+					.put("match_all", new JSONObject()))	
+			   	.put("script", new JSONObject()
+					.put("source", "cosineSimilarity(params.vector, doc['embedding']) + 1")
+					.put("params", new JSONObject()
+						.put("vector", eArray)))))
 	    .put("size", size)
-	    .toString()
-	    .replaceAll("0,", "0.0,")
-	    .replaceAll("0]", "0.0]");
-	
+	    .toString();
 	obj = queryIndex(d, query);	
 	if (obj == null) {
 	    return result;
