@@ -73,15 +73,15 @@ public class Functions {
 	    JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	    if (arr.length() == 2) {
 		obj = (JSONObject)((JSONObject)arr.get(0)).get("_source");
-		String[] vec1 = obj.get("embedding").toString().split(" ");
+		JSONArray vec1 = obj.getJSONArray("embedding");
 		obj = (JSONObject)((JSONObject)arr.get(1)).get("_source");
-		String[] vec2 = obj.get("embedding").toString().split(" ");
+		JSONArray vec2 = obj.getJSONArray("embedding");
 		double dotProduct = 0.0;
 		double normA = 0.0;
 		double normB = 0.0;
-		for (int i = 0; i < vec1.length; i++) {
-		    double a = Double.parseDouble(vec1[i].split("\\|")[1]);
-		    double b = Double.parseDouble(vec2[i].split("\\|")[1]);
+		for (int i = 0; i < vec1.length(); i++) {
+		    double a = vec1.getDouble(i);
+		    double b = vec2.getDouble(i);
 		    dotProduct += a * b;
 		    normA += a * a;
 		    normB += b * b;
@@ -100,9 +100,8 @@ public class Functions {
 	if (obj == null) {
 	    return result;
 	}
-	
+
 	JSONArray eArray = obj.getJSONArray("embedding");
-	System.out.println(eArray.toString());
 	String query = new JSONObject()
 	    .put("query", new JSONObject()
 			.put("script_score", new JSONObject()
