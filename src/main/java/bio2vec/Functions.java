@@ -94,19 +94,27 @@ public class Functions {
 	return roundTo3(res);
     }
 
-    public static ArrayList<String[]> mostSimilar(String d, String v, int size) {
+    public static ArrayList<String[]> mostSimilar(String d, String v, int size, String type) {
 	ArrayList<String[]> result = new ArrayList<String[]>();
 	JSONObject obj = getObject(d, v);
 	if (obj == null) {
 	    return result;
 	}
 
+	JSONObject queryPart = null;
+	if (type != null) {
+		queryPart = new JSONObject()
+			.put("match", new JSONObject()
+				.put("type", type));
+	} else {
+		queryPart = new JSONObject().put("match_all", new JSONObject());
+	}
+
 	JSONArray eArray = obj.getJSONArray("embedding");
 	String query = new JSONObject()
 	    .put("query", new JSONObject()
 			.put("script_score", new JSONObject()
-				.put("query", new JSONObject()
-					.put("match_all", new JSONObject()))	
+				.put("query", queryPart)	
 			   	.put("script", new JSONObject()
 					.put("source", "cosineSimilarity(params.vector, doc['embedding']) + 1")
 					.put("params", new JSONObject()

@@ -24,20 +24,26 @@ public class MostSimilar implements InverseMagicProperty {
     public CloseableIteration<? extends List<? extends Value>, QueryEvaluationException> evaluate(final ValueFactory valueFactory, Value... args)
 	throws QueryEvaluationException
     {
-	if (args.length != 3) {
-	    throw new ValueExprEvaluationException(String.format("%s requires 3 arguments, got %d", getURI(), args.length));
+	if (args.length >= 3) {
+	    throw new ValueExprEvaluationException(String.format("%s requires atleast 3 arguments, got %d", getURI(), args.length));
 	}
 	
 	String d = ((Literal)args[0]).stringValue();
 	String v = ((Literal)args[1]).stringValue();
 	int size = 0;
+
 	try {
 	    size = ((Literal)args[2]).intValue();
 	} catch (NumberFormatException e) {
 	    throw new ValueExprEvaluationException(String.format("%s requires for second argument integer value", getURI()));
 	}
 
-	ArrayList<String[]> results = Functions.mostSimilar(d, v, size);
+	String type = null;
+	if (args.length == 4) {
+		type = ((Literal)args[3]).stringValue();
+	}
+
+	ArrayList<String[]> results = Functions.mostSimilar(d, v, size, type);
 
 	return new CloseableIteratorIteration<List<? extends Value>, QueryEvaluationException>(SingleValueToListTransformer.transform(new Iterator<Value>() {
 		
