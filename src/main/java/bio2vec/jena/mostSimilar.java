@@ -3,14 +3,10 @@ package bio2vec.jena;
 import org.apache.jena.graph.Node;
 import org.apache.jena.sparql.expr.NodeValue;
 import org.apache.jena.sparql.expr.ExprEvalException;
-import org.apache.jena.sparql.util.FmtUtils;
 
 import org.apache.jena.atlas.iterator.Iter ;
-import org.apache.jena.atlas.lib.StrUtils ;
-import org.apache.jena.graph.Node ;
 import org.apache.jena.graph.NodeFactory ;
 import org.apache.jena.query.QueryBuildException;
-import org.apache.jena.rdf.model.impl.Util ;
 import org.apache.jena.sparql.core.Var ;
 import org.apache.jena.sparql.engine.ExecutionContext ;
 import org.apache.jena.sparql.engine.QueryIterator ;
@@ -21,19 +17,10 @@ import org.apache.jena.sparql.engine.iterator.QueryIterPlainWrapper ;
 import org.apache.jena.sparql.pfunction.PFuncListAndList ;
 import org.apache.jena.sparql.pfunction.PropFuncArg ;
 import org.apache.jena.sparql.util.IterLib;
-import java.io.*;
 import java.util.*;
-import org.json.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.jena.ext.xerces.util.URI;
-
-
-import org.apache.http.*;
-import org.apache.http.client.methods.*;
-import org.apache.http.util.*;
-import org.apache.http.entity.*;
-import org.apache.http.impl.client.*;
 
 import bio2vec.Functions;
 
@@ -68,8 +55,8 @@ public class mostSimilar extends PFuncListAndList {
 				       final Node predicate,
 				       final PropFuncArg object,
 				       final ExecutionContext execCxt) {
-	if (!object.getArg(0).isURI() ||
-	    !object.getArg(1).isURI() || !object.getArg(2).isLiteral()) {
+	if (!object.getArg(0).isURI() || !object.getArg(1).isURI() 
+	|| !object.getArg(2).isLiteral() || (object.getArg(3) != null && !object.getArg(3).isURI())) {
             throw new ExprEvalException("Invalid arguments format");
         }
 	
@@ -81,8 +68,16 @@ public class mostSimilar extends PFuncListAndList {
 	}
 	String v = object.getArg(1).toString();
 	int size = Integer.parseInt(
-	    object.getArg(2).getLiteralLexicalForm().toString());
-	ArrayList<String[]> arr = Functions.mostSimilar(d, v, size);
+		object.getArg(2).getLiteralLexicalForm().toString());
+	
+	ArrayList<String[]> arr =  null;
+	if (object.getArg(3) != null) {
+		String type = object.getArg(3).toString();
+		arr = Functions.mostSimilar(d, v, size, type);
+	} else {
+		arr = Functions.mostSimilar(d, v, size, null);
+	}
+
 	if (arr.size() == 0) {
 	    return IterLib.noResults(execCxt);
 	}
