@@ -42,10 +42,10 @@ public class mostSimilar extends PFuncListAndList {
 		"Subject list must contain exactly four variables, " +
 		"entity IRI, similarity, x and y");
 	
-	if (argObject.getArgListSize() != 3)
+	if (argObject.getArgListSize() < 3)
             throw new QueryBuildException(
-		"Object list must contain exactly three arguments, " +
-		"the dataset IRI, entity IRI and number of most similar nodes");
+		"Object list must contain atleast three arguments, " +
+		"the dataset IRI, entity IRI, number of most similar nodes and type is optional");
 	        
     }
 
@@ -55,8 +55,8 @@ public class mostSimilar extends PFuncListAndList {
 				       final Node predicate,
 				       final PropFuncArg object,
 				       final ExecutionContext execCxt) {
-	if (!object.getArg(0).isURI() || !object.getArg(1).isURI() 
-	|| !object.getArg(2).isLiteral() || (object.getArg(3) != null && !object.getArg(3).isURI())) {
+	if (!object.getArg(0).isURI() || !object.getArg(1).isURI() || !object.getArg(2).isLiteral() 
+	|| (object.getArgListSize() == 4 && !object.getArg(3).isURI())) {
             throw new ExprEvalException("Invalid arguments format");
         }
 	
