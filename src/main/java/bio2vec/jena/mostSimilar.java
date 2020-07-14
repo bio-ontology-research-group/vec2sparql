@@ -71,7 +71,7 @@ public class mostSimilar extends PFuncListAndList {
 		object.getArg(2).getLiteralLexicalForm().toString());
 	
 	ArrayList<String[]> arr =  null;
-	if (object.getArg(3) != null) {
+	if (object.getArgListSize() == 4) {
 		String type = object.getArg(3).toString();
 		arr = Functions.mostSimilar(d, v, size, type);
 	} else {
