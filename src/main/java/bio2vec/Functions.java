@@ -9,11 +9,12 @@ import org.apache.http.client.methods.*;
 import org.apache.http.util.*;
 import org.apache.http.entity.*;
 import org.apache.http.impl.client.*;
+import org.elasticsearch.client.Request;
+import org.elasticsearch.client.Response;
 
 
 public class Functions {
-    
-    public static final String ELASTIC_INDEX_URI = "http://10.127.4.79:9200/";
+
     public static final String NAMESPACE = "http://bio2vec.net/";
 
     public static double roundTo3(double a) {
@@ -143,35 +144,53 @@ public class Functions {
 	CloseableHttpClient client = HttpClients.createDefault();
 	JSONObject result = null;
 	try {
-	    try {
-		HttpPost post = new HttpPost(ELASTIC_INDEX_URI +
-					     dataset + "/_search");
-		StringEntity requestEntity = new StringEntity(query,
-							      ContentType.APPLICATION_JSON);
-		post.setEntity(requestEntity);
-		CloseableHttpResponse response = client.execute(post);
-		try {
-		    // Execute the method.
-		    int statusCode = response.getStatusLine().getStatusCode();
-		    HttpEntity entity = response.getEntity();
+		ESConnection conn = ESConnection.getInstance();
+		Request request = new Request("POST", "/" + conn.getIndexPrefix() + dataset + "/_search");
+		request.setJsonEntity(query);
+		Response response = conn.getRestClient().performRequest(request);
+		HttpEntity entity = response.getEntity();
+		int statusCode = response.getStatusLine().getStatusCode();
 			
-		    if (statusCode < 200 || statusCode >= 300) {
+		if (statusCode < 200 || statusCode >= 300) {
 			System.err.println("Method failed: " + response.getStatusLine());
-		    } else {
+		} else {
 			// Read the response body.
 			String responseBody = EntityUtils.toString(entity, "UTF-8");
 			// Deal with the response.
 			// Use caution: ensure correct character encoding and is not binary data
 			result = new JSONObject(responseBody);
-		    }
-		    EntityUtils.consume(entity);
-		} finally {
-		    // Release the connection.
-		    response.close();
 		}
-	    } finally {
-		client.close();
-	    }
+		EntityUtils.consume(entity);
+		
+		
+		// HttpPost post = new HttpPost(ELASTIC_INDEX_URI +
+		// 			     dataset + "/_search");
+		// StringEntity requestEntity = new StringEntity(query,
+		// 					      ContentType.APPLICATION_JSON);
+		// post.setEntity(requestEntity);
+		// CloseableHttpResponse response = client.execute(post);
+		// try {
+		//     // Execute the method.
+		//     int statusCode = response.getStatusLine().getStatusCode();
+		//     HttpEntity entity = response.getEntity();
+			
+		//     if (statusCode < 200 || statusCode >= 300) {
+		// 	System.err.println("Method failed: " + response.getStatusLine());
+		//     } else {
+		// 	// Read the response body.
+		// 	String responseBody = EntityUtils.toString(entity, "UTF-8");
+		// 	// Deal with the response.
+		// 	// Use caution: ensure correct character encoding and is not binary data
+		// 	result = new JSONObject(responseBody);
+		//     }
+		//     EntityUtils.consume(entity);
+		// } finally {
+		//     // Release the connection.
+		//     response.close();
+		// }
+	    // } finally {
+		// client.close();
+	    // }
 	} catch (IOException ex) {
 	    ex.printStackTrace();
 	}

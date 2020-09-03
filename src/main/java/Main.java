@@ -12,6 +12,7 @@ import org.apache.jena.sparql.pfunction.PropertyFunctionRegistry;
 import org.apache.jena.query.ARQ;
 import bio2vec.jena.*;
 import bio2vec.Functions;
+import bio2vec.ESConnection;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.JCommander;
 import org.slf4j.Logger;
@@ -28,6 +29,7 @@ public class Main {
 
     public Main() {
 	logger = LoggerFactory.getLogger(Main.class);
+	ESConnection.getInstance();
     }
     
     public void run() throws Exception{
