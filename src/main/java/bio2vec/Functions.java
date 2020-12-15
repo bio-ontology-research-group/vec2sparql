@@ -128,8 +128,8 @@ public class Functions {
 	}
 	JSONArray arr = (JSONArray)((JSONObject)obj.get("hits")).get("hits");
 	for (int i = 0; i < arr.length(); i++) {
-	    obj = (JSONObject)arr.get(i);
-	    String score = obj.get("_score").toString();
+		obj = (JSONObject)arr.get(i);
+	    String score = (((Double) obj.get("_score"))  - 1) + "";
 	    obj = (JSONObject)obj.get("_source");
 	    String id = obj.get("id").toString();
 	    String x = obj.get("x").toString();
