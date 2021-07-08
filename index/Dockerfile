@@ -7,4 +7,4 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["python", "index.py"]
+ENTRYPOINT ["python", "/app/index.py"]

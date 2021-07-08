@@ -26,11 +26,13 @@ public class Main {
 
 	String[] datasets = new String[]{
 	    "graph_embeddings",
-	    "patient_embeddings"
+	    "patient_embeddings",
+		"protein_embeddings"
 	};
 	String[] files = new String[]{
-	    "data/graph.ttl",
-	    "data/graph_patients.ttl"
+	    "/data/graph.ttl",
+	    "/data/graph_patients.ttl",
+		"/data/human_interactome.ttl"
 	};
 
 	FusekiServer.Builder fsb = FusekiServer.create()
